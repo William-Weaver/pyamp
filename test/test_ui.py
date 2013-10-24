@@ -1,3 +1,4 @@
+# coding=utf-8
 from unittest import TestCase
 from mock import patch
 
@@ -122,3 +123,21 @@ class TestUIElements(TestCase):
         self.assertEqual(progress_bar.draw(9, 1), '[===-   ]')
         progress_bar.fraction = 1
         self.assertEqual(progress_bar.draw(9, 1), '[=======]')
+
+    def test_progress_bar_unicode(self):
+        progress_bar = ProgressBar(u':*█:')
+        progress_bar.fraction = 0.5
+        self.assertEqual(progress_bar.draw(8, 1), u':███***:')
+
+    def test_custom_progress_bar(self):
+        progress_bar = ProgressBar('()')
+        progress_bar.fraction = 0.5
+        self.assertEqual(progress_bar.draw(8, 1), '[===   ]')
+        progress_bar = ProgressBar('(_-)')
+        progress_bar.fraction = 0.5
+        self.assertEqual(progress_bar.draw(8, 1), '(---___)')
+        progress_bar = ProgressBar('{ `\'"}')
+        progress_bar.fraction = 0.45
+        self.assertEqual(progress_bar.draw(9, 1), '{"""`   }')
+        progress_bar.fraction = 0.49
+        self.assertEqual(progress_bar.draw(9, 1), '{"""\'   }')
