@@ -40,8 +40,6 @@ class TestUserConfig(TestCase):
 
     def test_attribute_lookup(self):
         user_config = UserConfig(self.default_config_data)
-        print user_config._data
-        print user_config.blasters
         self.assertFalse(user_config.blasters)
         self.assertEqual(
             user_config.engines,
@@ -60,7 +58,8 @@ class TestUserConfig(TestCase):
         user_config = UserConfig(self.default_config_data)
         self.assertEqual(
             dir(user_config),
-            ['blasters', 'clean_trousers', 'engines', 'pilot', 'shields'])
+            sorted(dir(UserConfig) + [
+                'blasters', 'clean_trousers', 'engines', 'pilot', 'shields']))
 
     def test_eq(self):
         config1 = UserConfig(self.default_config_data)
@@ -77,6 +76,14 @@ class TestUserConfig(TestCase):
         string = str(user_config)
         restored_data = yaml.load(string)
         self.assertEqual(restored_data, self.default_config_data)
+
+    def test_iter(self):
+        user_config = UserConfig(self.default_config_data)
+        user_config_output = [tup for tup in user_config]
+        self.assertItemsEqual(
+            user_config_output,
+            self.default_config_data.items())
+        self.assertIsInstance(dict(user_config_output)['shields'], UserConfig)
 
     def test_update(self):
         default_config = UserConfig(self.default_config_data)
